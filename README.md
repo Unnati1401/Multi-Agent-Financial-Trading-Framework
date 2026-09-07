@@ -1,225 +1,376 @@
-<p align="center">
-  <img src="assets/TauricResearch.png" style="width: 60%; height: auto;">
-</p>
+# A Deep Learning Enhanced Framework for Multi-Agent Financial Trading
 
-<div align="center" style="line-height: 1;">
-  <a href="https://arxiv.org/abs/2412.20138" target="_blank"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2412.20138-B31B1B?logo=arxiv"/></a>
-  <a href="https://discord.com/invite/hk9PGKShPK" target="_blank"><img alt="Discord" src="https://img.shields.io/badge/Discord-TradingResearch-7289da?logo=discord&logoColor=white&color=7289da"/></a>
-  <a href="./assets/wechat.png" target="_blank"><img alt="WeChat" src="https://img.shields.io/badge/WeChat-TauricResearch-brightgreen?logo=wechat&logoColor=white"/></a>
-  <a href="https://x.com/TauricResearch" target="_blank"><img alt="X Follow" src="https://img.shields.io/badge/X-TauricResearch-white?logo=x&logoColor=white"/></a>
-  <br>
-  <a href="https://github.com/TauricResearch/" target="_blank"><img alt="Community" src="https://img.shields.io/badge/Join_GitHub_Community-TauricResearch-14C290?logo=discourse"/></a>
-</div>
+**Team Finovators** · Athish Raj Mohan · Unnati Ulhas Nandrekar · University of Southern California
 
-<div align="center">
-  <!-- Keep these links. Translations will automatically update with the README. -->
-  <a href="https://www.readme-i18n.com/TauricResearch/TradingAgents?lang=de">Deutsch</a> | 
-  <a href="https://www.readme-i18n.com/TauricResearch/TradingAgents?lang=es">Español</a> | 
-  <a href="https://www.readme-i18n.com/TauricResearch/TradingAgents?lang=fr">français</a> | 
-  <a href="https://www.readme-i18n.com/TauricResearch/TradingAgents?lang=ja">日本語</a> | 
-  <a href="https://www.readme-i18n.com/TauricResearch/TradingAgents?lang=ko">한국어</a> | 
-  <a href="https://www.readme-i18n.com/TauricResearch/TradingAgents?lang=pt">Português</a> | 
-  <a href="https://www.readme-i18n.com/TauricResearch/TradingAgents?lang=ru">Русский</a> | 
-  <a href="https://www.readme-i18n.com/TauricResearch/TradingAgents?lang=zh">中文</a>
-</div>
+An extension of the [TradingAgents](https://arxiv.org/abs/2412.20138) multi-agent LLM trading framework that replaces subjective, general-purpose LLM sentiment with domain-specific deep learning signals and grounds agent debates in verifiable evidence.
 
 ---
 
-# TradingAgents: Multi-Agents LLM Financial Trading Framework 
+## Motivation
 
-> 🎉 **TradingAgents** officially released! We have received numerous inquiries about the work, and we would like to express our thanks for the enthusiasm in our community.
->
-> So we decided to fully open-source the framework. Looking forward to building impactful projects with you!
+TradingAgents simulates a trading firm using specialized LLM agents (analysts, researchers, traders, risk managers). It works, but three weaknesses limit it in high-stakes settings:
 
-<div align="center">
-<a href="https://www.star-history.com/#TauricResearch/TradingAgents&Date">
- <picture>
-   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=TauricResearch/TradingAgents&type=Date&theme=dark" />
-   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=TauricResearch/TradingAgents&type=Date" />
-   <img alt="TradingAgents Star History" src="https://api.star-history.com/svg?repos=TauricResearch/TradingAgents&type=Date" style="width: 80%; height: auto;" />
- </picture>
-</a>
-</div>
+1. **Subjective sentiment.** General-purpose LLMs produce inconsistent sentiment scores that shift with prompt phrasing.
+2. **The telephone effect.** Multi-round natural language debate degrades information across turns.
+3. **No event awareness.** Technical indicators and diffuse news sentiment fail to surface high-impact corporate events such as earnings surprises in time to act on them.
 
-<div align="center">
+This repo addresses all three.
 
-🚀 [TradingAgents](#tradingagents-framework) | ⚡ [Installation & CLI](#installation-and-cli) | 🎬 [Demo](https://www.youtube.com/watch?v=90gr5lwjIho) | 📦 [Package Usage](#tradingagents-package) | 🤝 [Contributing](#contributing) | 📄 [Citation](#citation)
+---
 
-</div>
+## Contributions
 
-## TradingAgents Framework
+| # | Enhancement | What it does |
+|---|---|---|
+| 1 | **FinBERT Sentiment Analyst** | Replaces LLM sentiment with a fine-tuned FinBERT model producing quantitative positive/neutral/negative scores |
+| 2 | **Event Impact Analyst** | Detects financial events and assigns a structured impact score on a -5 to +5 scale, routed into analyst reports |
+| 3 | **Evidence-anchored debate protocol** | Central evidence registry with unique `evidence-id` per data point; Bull/Bear agents may only cite tagged evidence, validated by a Judge module |
 
-TradingAgents is a multi-agent trading framework that mirrors the dynamics of real-world trading firms. By deploying specialized LLM-powered agents: from fundamental analysts, sentiment experts, and technical analysts, to trader, risk management team, the platform collaboratively evaluates market conditions and informs trading decisions. Moreover, these agents engage in dynamic discussions to pinpoint the optimal strategy.
+---
 
-<p align="center">
-  <img src="assets/schema.png" style="width: 100%; height: auto;">
-</p>
+## Architecture
 
-> TradingAgents framework is designed for research purposes. Trading performance may vary based on many factors, including the chosen backbone language models, model temperature, trading periods, the quality of data, and other non-deterministic factors. [It is not intended as financial, investment, or trading advice.](https://tauric.ai/disclaimer/)
-
-Our framework decomposes complex trading tasks into specialized roles. This ensures the system achieves a robust, scalable approach to market analysis and decision-making.
-
-### Analyst Team
-- Fundamentals Analyst: Evaluates company financials and performance metrics, identifying intrinsic values and potential red flags.
-- Sentiment Analyst: Analyzes social media and public sentiment using sentiment scoring algorithms to gauge short-term market mood.
-- News Analyst: Monitors global news and macroeconomic indicators, interpreting the impact of events on market conditions.
-- Technical Analyst: Utilizes technical indicators (like MACD and RSI) to detect trading patterns and forecast price movements.
-
-<p align="center">
-  <img src="assets/analyst.png" width="100%" style="display: inline-block; margin: 0 2%;">
-</p>
-
-### Researcher Team
-- Comprises both bullish and bearish researchers who critically assess the insights provided by the Analyst Team. Through structured debates, they balance potential gains against inherent risks.
-
-<p align="center">
-  <img src="assets/researcher.png" width="70%" style="display: inline-block; margin: 0 2%;">
-</p>
-
-### Trader Agent
-- Composes reports from the analysts and researchers to make informed trading decisions. It determines the timing and magnitude of trades based on comprehensive market insights.
-
-<p align="center">
-  <img src="assets/trader.png" width="70%" style="display: inline-block; margin: 0 2%;">
-</p>
-
-### Risk Management and Portfolio Manager
-- Continuously evaluates portfolio risk by assessing market volatility, liquidity, and other risk factors. The risk management team evaluates and adjusts trading strategies, providing assessment reports to the Portfolio Manager for final decision.
-- The Portfolio Manager approves/rejects the transaction proposal. If approved, the order will be sent to the simulated exchange and executed.
-
-<p align="center">
-  <img src="assets/risk.png" width="70%" style="display: inline-block; margin: 0 2%;">
-</p>
-
-## Installation and CLI
-
-### Installation
-
-Clone TradingAgents:
-```bash
-git clone https://github.com/TauricResearch/TradingAgents.git
-cd TradingAgents
+```
+Data Sources                  Analyst Team              Researcher Team      Risk Mgmt         Decision
+─────────────                 ────────────              ───────────────      ─────────         ────────
+Yahoo Finance ─┐
+Price Charts   ├─ Market ──▶  Market Analyst      ─┐
+               │                                   │
+Reddit         │              Event Impact         │
+Bloomberg      ├─ News   ──▶  Analyst (LLM,        ├──▶  Bullish        ─┐
+FinHub API     │              impact scoring)      │     Researcher      │
+               │                                   │                     ├──▶ Trader ──▶ Risk Analyst ──▶ Fund
+Twitter        ├─ Social ──▶  Social Media &       │     Bearish        ─┘              Compliance      Manager
+Reddit         │              News Analyst         │     Researcher                     Analyst
+               │              (FinBERT)            │
+Insider Txns   │                                   │     Debate Facilitator
+Financials     ├─ Fund.  ──▶  Fundamental Analyst ─┤
+Company Profile│                                   │
+               │              Sentiment Analyst   ─┘
+ECTSum         │
+Kaggle Market ─┘
 ```
 
-Create a virtual environment in any of your favorite environment managers:
-```bash
-conda create -n tradingagents python=3.13
-conda activate tradingagents
+**Agent roles**
+
+- **Social Media & News Analyst** (FinBERT): extracts sentiment from unstructured news and social feeds.
+- **Sentiment Analyst**: aggregates FinBERT outputs into structured sentiment reports.
+- **Event Impact Analyst**: identifies and scores financial events, feeding structured signals downstream.
+- **Bull / Bear Researchers**: debate using evidence-tagged inputs only.
+- **Trader**: synthesizes validated claims, sentiment scores, and event impacts.
+- **Risk Management Team**: monitors exposure across risk-seeking, neutral, and conservative stances.
+- **Fund Manager**: final trading decision.
+
+---
+
+## Modules
+
+### 1. FinBERT Sentiment Analysis
+
+Fine-tuned on the Financial PhraseBank and Kaggle Financial News corpora.
+
+| Component | Detail |
+|---|---|
+| Base model | FinBERT (BERT-base architecture) |
+| Transformer layers | 12 encoder layers |
+| Hidden size | 768 |
+| Attention heads | 12 |
+| Intermediate size | 3072 |
+| Normalization | LayerNorm after each encoder block |
+| Output layer | Fully connected + softmax over 3 classes |
+
+`get_finbert_sentiment` wraps `score_finbert`, which loads the model and tokenizer, batches inputs (padding, truncation, `max_length=256`), applies softmax to logits, and maps the resulting probabilities to a label. Class ordering is resolved dynamically from the model ID, since checkpoint conventions differ.
+
+### 2. Event Impact Analyst
+
+An autonomous agent that queries an LLM to score structured financial event rows. Each event row is serialized to text, sent with a system prompt requesting strict JSON, parsed from the first `{` to the last `}`, and clamped to `[-5, 5]`. Parse failures default to `0.0`.
+
+| Score | Interpretation |
+|---|---|
+| +5 | Extremely positive impact |
+| +3 | Clearly positive |
+| 0 | Neutral or negligible |
+| -3 | Clearly negative |
+| -5 | Extremely negative |
+
+### 3. Evidence-Anchored Debate Protocol
+
+A centralized evidence registry stores structured outputs from the Sentiment Analyst, Event Detection Agent, and Technical Indicator module. Every data point carries an `evidence-id`. Bull and Bear researchers are constrained to evidence-tagged reasoning, a Judge module validates claim relevance, and the Trader and Risk Manager consume only validated claims. Any data lacking an `evidence-id` is unusable in debate.
+
+---
+
+## Datasets
+
+### FinBERT evaluation set
+
+Kaggle **Stock Market Dataset for Financial Analysis**. Roughly 2,000 records across AAPL, AMZN, GOOG, MSFT, TSLA, one row per ticker-day, with Open/Close/High/Low, RSI, MACD, and Signal. About 100 rows had missing RSI and were dropped, leaving 1,900 clean records.
+
+Ground-truth `Decision` labels come from a rule-based function:
+
+- **Buy** if `RSI < 30` and `Close > Open`
+- **Sell** if `RSI > 70` and `Close < Open`
+- **Hold** otherwise
+
+Resulting distribution: ~32% Buy, ~28% Sell, ~40% Hold.
+
+### Event Impact Analyst evaluation set
+
+An integrated dataset built from two sources:
+
+- **Kaggle 9000+ Tickers Stock Market Dataset**: full OHLCV history, temporally rich but with no textual annotations and irregular per-ticker coverage.
+- **ECTSum**: earnings call transcript summaries for 100+ tickers, textually rich but sparse in coverage.
+
+Quarterly ECTSum summaries were merged per fiscal period per ticker, then aligned to the corresponding Kaggle OHLCV date. Only events with 3 to 5 consecutive surrounding trading days were retained, guaranteeing enough temporal context to assess short-term (1 to 3 day) market impact.
+
+| Field | Type |
+|---|---|
+| Ticker | str |
+| Date | datetime |
+| Open, High, Low, Close | float |
+| Volume | float |
+| Dividend | float |
+| Stock splits | float |
+| ECTSum_Summary | str |
+
+---
+
+## Baselines
+
+Because the 9000-ticker Kaggle dataset ships no BUY/SELL/HOLD ground truth, four heuristic label generators were implemented and the framework evaluated against all of them.
+
+**Forward Return Threshold (supervised)**
+
+```
+r_t = (Close_{t+1} - Close_t) / Close_t
+
+BUY   if r_t >  θ
+SELL  if r_t < -θ
+HOLD  if |r_t| ≤ θ          θ = 0.5%
 ```
 
-Install dependencies:
+**Momentum + Volume Spike (technical)**
+
+```
+Body_t  = |Close_t - Open_t|
+Range_t = High_t - Low_t
+ATR_t   = RollingMean_5(High - Low)
+V̄_t     = RollingMean_10(Volume)
+
+BUY  if Close_t > Open_t and Range_t > ATR_t and Volume_t > 1.2 · V̄_t
+SELL if Close_t < Open_t and Range_t > ATR_t and Volume_t > 1.2 · V̄_t
+HOLD otherwise
+```
+
+**Candlestick Body-Range Pattern (price action)**
+
+```
+BUY  if Body_t > 0.5 · Range_t and Close_t > Open_t
+SELL if Body_t > 0.5 · Range_t and Close_t < Open_t
+HOLD otherwise
+```
+
+**Unsupervised Clustering (data-driven)**
+
+```
+X = StandardScaler([Open, High, Low, Close, Volume])
+KMeans(k = 3, random_state = 42)
+Δ_t = Close_t - Open_t
+```
+
+Clusters are ranked by mean `Δ_t`: highest returns map to BUY, lowest to SELL, middle to HOLD.
+
+A fifth reference point, the **API-based sentiment baseline**, uses precomputed sentiment from FinHub and comparable providers, matching the original TradingAgents implementation.
+
+---
+
+## Results
+
+Evaluation metric is standard classification accuracy, reported alongside relative improvement over baseline.
+
+### FinBERT integration
+
+Balanced 100-record subset, stratified across five tickers.
+
+| Ticker | Baseline (%) | FinBERT (%) | Relative Δ (%) |
+|---|---|---|---|
+| AAPL | 35.00 | 30.00 | -14.29 |
+| AMZN | 15.00 | 40.00 | **+166.67** |
+| GOOG | 10.53 | 26.32 | **+150.00** |
+| MSFT | 40.00 | 35.00 | -12.50 |
+| TSLA | 18.75 | 37.50 | **+100.00** |
+
+**Aggregate:** baseline 28/100 (28.00%), FinBERT 37/100 (37.00%), **+32.14% relative improvement**.
+
+Gains concentrate in volatile, news-sensitive tickers. The AAPL and MSFT declines are likely attributable to sentiment noise, overfitting, or lower signal clarity in their textual data.
+
+### Event Impact Analyst
+
+Balanced 100-record subset across KO, MMM, EME, CNP, GD.
+
+| Baseline | With Event Detection (%) | Without (%) | Relative Δ (%) |
+|---|---|---|---|
+| Forward Return Threshold | 31.31 | 35.00 | -10.54 |
+| Momentum + Volume Spike | 38.38 | 37.00 | +3.73 |
+| **Candlestick Body-Range Pattern** | **40.40** | **32.00** | **+26.25** |
+| Unsupervised Clustering | 31.31 | 34.00 | -7.91 |
+
+Event detection helps most when the underlying baseline already encodes market psychology or volatility structure. Mechanical return thresholds and unsupervised cluster boundaries do not always align with event-driven insight, which explains the two negative deltas. In some of those cases the impact scoring plausibly overrode a baseline label that was itself misaligned with true market behavior.
+
+---
+
+## Sensitivity Analysis
+
+| Parameter | Finding |
+|---|---|
+| RSI thresholds (30/70 → 25/75) | Stricter cutoffs shift mass toward HOLD and introduce class imbalance |
+| Text source (news vs. social) | FinBERT stays stable across modalities; social inputs show higher score volatility from informal phrasing and sarcasm |
+| Forward return θ | 0.3% floods HOLD; 0.7% biases SELL; **0.5% is the stable midpoint** |
+| Rolling window (10d → 5d) | 10-day windows produce unstable ATR on shallow per-ticker history; **5 days** restores usable signal |
+| KMeans k | k=3 gives clean regime separation (BUY ≈ 66.67, HOLD ≈ 28.33, SELL ≈ 5.00); k=5 fragments centroids and hurts interpretability |
+
+---
+
+## Repository Structure
+
+```
+.
+├── tradingagents/
+│   ├── agents/
+│   │   ├── analysts/
+│   │   │   ├── sentiment_analyst.py       # FinBERT-backed
+│   │   │   ├── event_impact_analyst.py    # impact scoring agent
+│   │   │   ├── news_analyst.py
+│   │   │   ├── fundamentals_analyst.py
+│   │   │   └── market_analyst.py
+│   │   ├── researchers/                   # bull / bear / facilitator
+│   │   ├── risk_mgmt/
+│   │   └── trader/
+│   ├── evidence/                          # registry, evidence-id issuance, Judge
+│   ├── dataflows/                         # data source adapters
+│   └── graph/                             # agent orchestration
+├── finbert/
+│   ├── score_finbert.py
+│   └── get_finbert_sentiment.py
+├── data/
+│   ├── kaggle_stock_market/
+│   ├── kaggle_9000_tickers/
+│   └── ectsum/
+├── baselines/
+│   ├── forward_return.py
+│   ├── momentum_volume.py
+│   ├── candlestick.py
+│   └── clustering.py
+├── eval/
+│   ├── run_finbert_eval.py
+│   └── run_event_eval.py
+└── results/
+```
+
+---
+
+## Setup
+
 ```bash
+git clone https://github.com/<user>/<repo>.git
+cd <repo>
+
+python -m venv .venv
+source .venv/bin/activate        # Windows: .venv\Scripts\activate
+
 pip install -r requirements.txt
 ```
 
-### Required APIs
-
-You will need the OpenAI API for all the agents, and [Alpha Vantage API](https://www.alphavantage.co/support/#api-key) for fundamental and news data (default configuration).
+Create a `.env` in the repo root:
 
 ```bash
-export OPENAI_API_KEY=$YOUR_OPENAI_API_KEY
-export ALPHA_VANTAGE_API_KEY=$YOUR_ALPHA_VANTAGE_API_KEY
+OPENAI_API_KEY=sk-...
+ALPHAVANTAGE_API_KEY=...
+FINNHUB_API_KEY=...
+FINBERT_MODEL_ID=yiyanghkust/finbert-tone   # or your fine-tuned checkpoint path
 ```
 
-Alternatively, you can create a `.env` file in the project root with your API keys (see `.env.example` for reference):
+Download the datasets into `data/` (see `data/README.md` for source links and expected filenames).
+
+---
+
+## Usage
+
+Run the full framework on a single ticker and date:
+
 ```bash
-cp .env.example .env
-# Edit .env with your actual API keys
+python -m tradingagents.main --ticker AAPL --date 2024-06-03
 ```
 
-**Note:** We are happy to partner with Alpha Vantage to provide robust API support for TradingAgents. You can get a free AlphaVantage API [here](https://www.alphavantage.co/support/#api-key), TradingAgents-sourced requests also have increased rate limits to 60 requests per minute with no daily limits. Typically the quota is sufficient for performing complex tasks with TradingAgents thanks to Alpha Vantage’s open-source support program. If you prefer to use OpenAI for these data sources instead, you can modify the data vendor settings in `tradingagents/default_config.py`.
-
-### CLI Usage
-
-You can also try out the CLI directly by running:
-```bash
-python -m cli.main
-```
-You will see a screen where you can select your desired tickers, date, LLMs, research depth, etc.
-
-<p align="center">
-  <img src="assets/cli/cli_init.png" width="100%" style="display: inline-block; margin: 0 2%;">
-</p>
-
-An interface will appear showing results as they load, letting you track the agent's progress as it runs.
-
-<p align="center">
-  <img src="assets/cli/cli_news.png" width="100%" style="display: inline-block; margin: 0 2%;">
-</p>
-
-<p align="center">
-  <img src="assets/cli/cli_transaction.png" width="100%" style="display: inline-block; margin: 0 2%;">
-</p>
-
-## TradingAgents Package
-
-### Implementation Details
-
-We built TradingAgents with LangGraph to ensure flexibility and modularity. We utilize `o1-preview` and `gpt-4o` as our deep thinking and fast thinking LLMs for our experiments. However, for testing purposes, we recommend you use `o4-mini` and `gpt-4.1-mini` to save on costs as our framework makes **lots of** API calls.
-
-### Python Usage
-
-To use TradingAgents inside your code, you can import the `tradingagents` module and initialize a `TradingAgentsGraph()` object. The `.propagate()` function will return a decision. You can run `main.py`, here's also a quick example:
+Score sentiment standalone:
 
 ```python
-from tradingagents.graph.trading_graph import TradingAgentsGraph
-from tradingagents.default_config import DEFAULT_CONFIG
+from finbert.score_finbert import score_finbert
 
-ta = TradingAgentsGraph(debug=True, config=DEFAULT_CONFIG.copy())
-
-# forward propagate
-_, decision = ta.propagate("NVDA", "2024-05-10")
-print(decision)
+results = score_finbert(
+    texts=["Q3 revenue beat consensus by 8%.", "Guidance cut for full year."],
+    model_id="yiyanghkust/finbert-tone",
+    device="cuda",
+    batch_size=16,
+)
+# -> [{"pos": ..., "neu": ..., "neg": ..., "label": ...}, ...]
 ```
 
-You can also adjust the default configuration to set your own choice of LLMs, debate rounds, etc.
+Reproduce the FinBERT evaluation:
 
-```python
-from tradingagents.graph.trading_graph import TradingAgentsGraph
-from tradingagents.default_config import DEFAULT_CONFIG
-
-# Create a custom config
-config = DEFAULT_CONFIG.copy()
-config["deep_think_llm"] = "gpt-4.1-nano"  # Use a different model
-config["quick_think_llm"] = "gpt-4.1-nano"  # Use a different model
-config["max_debate_rounds"] = 1  # Increase debate rounds
-
-# Configure data vendors (default uses yfinance and Alpha Vantage)
-config["data_vendors"] = {
-    "core_stock_apis": "yfinance",           # Options: yfinance, alpha_vantage, local
-    "technical_indicators": "yfinance",      # Options: yfinance, alpha_vantage, local
-    "fundamental_data": "alpha_vantage",     # Options: openai, alpha_vantage, local
-    "news_data": "alpha_vantage",            # Options: openai, alpha_vantage, google, local
-}
-
-# Initialize with custom config
-ta = TradingAgentsGraph(debug=True, config=config)
-
-# forward propagate
-_, decision = ta.propagate("NVDA", "2024-05-10")
-print(decision)
+```bash
+python eval/run_finbert_eval.py --n 100 --tickers AAPL,AMZN,GOOG,MSFT,TSLA
 ```
 
-> The default configuration uses yfinance for stock price and technical data, and Alpha Vantage for fundamental and news data. For production use or if you encounter rate limits, consider upgrading to [Alpha Vantage Premium](https://www.alphavantage.co/premium/) for more stable and reliable data access. For offline experimentation, there's a local data vendor option that uses our **Tauric TradingDB**, a curated dataset for backtesting, though this is still in development. We're currently refining this dataset and plan to release it soon alongside our upcoming projects. Stay tuned!
+Reproduce the Event Impact Analyst evaluation across all four baselines:
 
-You can view the full list of configurations in `tradingagents/default_config.py`.
+```bash
+python eval/run_event_eval.py --n 100 --tickers KO,MMM,EME,CNP,GD --baselines all
+```
 
-## Contributing
+---
 
-We welcome contributions from the community! Whether it's fixing a bug, improving documentation, or suggesting a new feature, your input helps make this project better. If you are interested in this line of research, please consider joining our open-source financial AI research community [Tauric Research](https://tauric.ai/).
+## Known Limitations
+
+- **API rate limits.** AlphaVantage caps at five requests per minute. Sleep intervals are inserted between calls, which slows the pipeline substantially. Evaluation was capped at 100 records per module despite a 2,000-entry dataset being prepared.
+- **Free-tier LLM endpoints.** Latency and occasional downtime, compounded by the high call volume inherent to multi-agent communication.
+- **No native ground truth.** All BUY/SELL/HOLD labels are heuristic. Results should be read as relative comparisons across baselines, not as absolute trading performance.
+- **Ticker coverage mismatch.** The tickers used for FinBERT evaluation are absent from ECTSum, which forced a separate 9000-ticker Kaggle dataset and a separate ticker set for event evaluation.
+- **Small evaluation window.** 100 records per module. Broader ticker and regime coverage is the obvious next step.
+
+---
+
+## Future Work
+
+- Finalize and evaluate the evidence-anchored debate protocol, varying enforcement strictness (mandatory vs. optional `evidence-id` citation) and measuring unverifiable claim rate, reasoning drift, and decision traceability.
+- Expand evaluation to a wider ticker universe and more market regimes as API budget permits.
+- Add robustness metrics beyond accuracy: worst-group accuracy and accuracy gap across sentiment sources.
+- Source-aware sentiment calibration to handle the higher volatility observed on social media inputs.
+- Study interactions between event detection, sentiment modeling, and debate-based refinement rather than ablating each in isolation.
+
+---
 
 ## Citation
 
-Please reference our work if you find *TradingAgents* provides you with some help :)
-
-```
-@misc{xiao2025tradingagentsmultiagentsllmfinancial,
-      title={TradingAgents: Multi-Agents LLM Financial Trading Framework}, 
-      author={Yijia Xiao and Edward Sun and Di Luo and Wei Wang},
-      year={2025},
-      eprint={2412.20138},
-      archivePrefix={arXiv},
-      primaryClass={q-fin.TR},
-      url={https://arxiv.org/abs/2412.20138}, 
+```bibtex
+@misc{finovators2026multiagent,
+  title  = {A Deep Learning Enhanced Framework for Multi-Agent Financial Trading},
+  author = {Mohan, Athish Raj and Nandrekar, Unnati Ulhas},
+  year   = {2026},
+  note   = {University of Southern California}
 }
 ```
+
+## Key References
+
+1. Xiao, Y., Sun, E., Luo, D., Wang, W. (2024). *TradingAgents: Multi-Agents LLM Financial Trading Framework.* arXiv:2412.20138
+2. Araci, D. (2019). *FinBERT: A Pre-trained Financial Language Representation Model for Financial Text Mining.* arXiv:1908.10063
+3. Huang, A. H., Wang, H., Yang, Y. (2022). *FinBERT: A Large Language Model for Extracting Information from Financial Text.* Contemporary Accounting Research. arXiv:2006.08097
+4. Tian, F., Salim, F. D., Xue, H. (2025). *TradingGroup: A Multi-Agent Trading System with Self-Reflection and Data-Synthesis.* arXiv:2508.17565
+5. Li, Y., Yu, Y., Li, H., Chen, Z. (2023). *TradingGPT: Multi-Agent System with Layered Memory and Distinct Characters.* arXiv:2309.03736
+6. Ding, Q., Shi, H. (2024). *TradExpert: Revolutionizing Trading with Mixture of Expert LLMs.* arXiv:2411.00782
+7. Vidler, A., Walsh, T. (2024). *TraderTalk: An LLM Behavioural ABM applied to Simulating Human Bilateral Trading Interactions.* arXiv:2410.21280
+8. Lee, M., Lay-Ki, S. (2024). *Finance Wizard at the FinLLM Challenge Task: Financial Text Summarization.*
+
+## Disclaimer
+
+Research prototype. Not financial advice and not suitable for live trading. Accuracy figures are derived from heuristic labels on small stratified subsets and do not represent realized returns.
